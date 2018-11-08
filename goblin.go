@@ -284,6 +284,17 @@ func (g *G) It(name string, h ...interface{}) {
 	}
 }
 
+func (g *G) FIt(name string, h func()) {
+	if matchesRegex(name) {
+		it := &It{name: name, parent: g.parent, reporter: g.reporter}
+		notifyParents(g.parent)
+		if h != nil {
+			it.h = h
+		}
+		g.parent.children = append(g.parent.children, Runnable(it))
+	}
+}
+
 func (g *G) Xit(name string, h ...interface{}) {
 	if matchesRegex(name) {
 		xit := &Xit{name: name, parent: g.parent, reporter: g.reporter}
